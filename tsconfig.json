@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    // Paths
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // Module system
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+
+    // Target JS version
+    "target": "ES2022",
+
+    // Output options
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Strictness
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+
+    // React (si lo necesitas)
+    "jsx": "react-jsx",
+
+    // Behavior
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+
+    // Compatibility
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+
+    // NECESARIO para TypeORM
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false
+  },
+
+  
+  "include": ["src/**/*.ts", "src/index.tsx"],
+
+  "exclude": ["node_modules", "dist"]
+}
