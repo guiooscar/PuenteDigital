@@ -118,11 +118,6 @@ src/
    ```
    El servidor se levantará en: `http://localhost:4000`
 
-5. **Generar build de producción**
-   ```bash
-   npm run build
-   npm start
-   ```
 
 ---
 

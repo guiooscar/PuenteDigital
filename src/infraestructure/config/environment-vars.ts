@@ -1,7 +1,8 @@
-import joi from "joi"; // importa joi y se guarda en una variable llamada joi
+import joi from "joi"; // importa joi que es una librería para la validación de esquemas
 
 import "dotenv/config"; // carga las variables de entorno desde un archivo .env
 
+// creamos un tipo para las variables de entorno que esperamos
 export type ReturnEnvironmentVars = {
   PORT: number;
   DB_HOST: string;
@@ -11,12 +12,13 @@ export type ReturnEnvironmentVars = {
   DB_NAME: string; 
 };
 
+// creamos un tipo para el resultado de la validación
 type ValidationEnvironmentVars = {
   error?: joi.ValidationError;
 
   value: ReturnEnvironmentVars;
 };
-
+// Función para validar las variables de entorno usando joi 
 function validateEnvVars(vars: NodeJS.ProcessEnv): ValidationEnvironmentVars {
   const envSchema = joi.object({
       PORT: joi.number().required(),
