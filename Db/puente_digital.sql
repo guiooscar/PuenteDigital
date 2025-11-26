@@ -11,22 +11,22 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+CREATE DATABASE IF NOT EXISTS `puente_digital` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `puente_digital`;
+
+-- --------------------------------------------------------
 --
 -- Base de datos: `puente_digital`
 --
 
 -- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `activities`
---
-
+-- 
 CREATE TABLE `activities` (
   `id_activity` int(11) NOT NULL,
   `id_module` int(11) DEFAULT NULL,
@@ -39,11 +39,8 @@ CREATE TABLE `activities` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `certificates`
 --
-
 CREATE TABLE `certificates` (
   `id_certificate` int(11) NOT NULL,
   `id_user` int(11) DEFAULT NULL,
@@ -56,11 +53,8 @@ CREATE TABLE `certificates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `modules`
 --
-
 CREATE TABLE `modules` (
   `id_module` int(11) NOT NULL,
   `title_module` varchar(255) NOT NULL,
@@ -72,11 +66,8 @@ CREATE TABLE `modules` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `progress`
 --
-
 CREATE TABLE `progress` (
   `id_progress` int(11) NOT NULL,
   `id_user` int(11) DEFAULT NULL,
@@ -90,11 +81,8 @@ CREATE TABLE `progress` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `users`
 --
-
 CREATE TABLE `users` (
   `id_user` int(11) NOT NULL,
   `name_user` varchar(255) NOT NULL,
@@ -105,103 +93,56 @@ CREATE TABLE `users` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
 -- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `activities`
---
 ALTER TABLE `activities`
   ADD PRIMARY KEY (`id_activity`),
   ADD KEY `FK_8c150e6989957e6e71d1c54a2e1` (`id_module`);
 
---
--- Indices de la tabla `certificates`
---
 ALTER TABLE `certificates`
   ADD PRIMARY KEY (`id_certificate`),
   ADD KEY `FK_52c01b57846b5a2e649f91d0538` (`id_user`),
   ADD KEY `FK_6d668689e6c3f58aa762ec99155` (`id_module`);
 
---
--- Indices de la tabla `modules`
---
 ALTER TABLE `modules`
   ADD PRIMARY KEY (`id_module`);
 
---
--- Indices de la tabla `progress`
---
 ALTER TABLE `progress`
   ADD PRIMARY KEY (`id_progress`),
   ADD KEY `FK_f8de1b451294384dbb720eb2cf6` (`id_user`),
   ADD KEY `FK_55d50325cb478b815339c856f10` (`id_activity`);
 
---
--- Indices de la tabla `users`
---
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id_user`),
   ADD UNIQUE KEY `IDX_6a96700476ddd642b04e29c85f` (`email_user`);
 
---
 -- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `activities`
---
 ALTER TABLE `activities`
   MODIFY `id_activity` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `certificates`
---
 ALTER TABLE `certificates`
   MODIFY `id_certificate` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `modules`
---
 ALTER TABLE `modules`
   MODIFY `id_module` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `progress`
---
 ALTER TABLE `progress`
   MODIFY `id_progress` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `users`
---
 ALTER TABLE `users`
   MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT;
 
---
 -- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `activities`
---
 ALTER TABLE `activities`
   ADD CONSTRAINT `FK_8c150e6989957e6e71d1c54a2e1` FOREIGN KEY (`id_module`) REFERENCES `modules` (`id_module`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
---
--- Filtros para la tabla `certificates`
---
 ALTER TABLE `certificates`
   ADD CONSTRAINT `FK_52c01b57846b5a2e649f91d0538` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `FK_6d668689e6c3f58aa762ec99155` FOREIGN KEY (`id_module`) REFERENCES `modules` (`id_module`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
---
--- Filtros para la tabla `progress`
---
 ALTER TABLE `progress`
   ADD CONSTRAINT `FK_55d50325cb478b815339c856f10` FOREIGN KEY (`id_activity`) REFERENCES `activities` (`id_activity`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `FK_f8de1b451294384dbb720eb2cf6` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
