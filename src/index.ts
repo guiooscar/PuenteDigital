@@ -1,4 +1,4 @@
-import app from "./app.js";
+import app from "./infraestructure/web/app.js";
 import { ServerBootstrap } from "./infraestructure/bootstrap/server.bootstrap.js";
 import { connectDB } from "./infraestructure/config/data-base.js";
 
