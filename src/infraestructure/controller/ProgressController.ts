@@ -1,5 +1,3 @@
-// src/infrastructure/controllers/ProgressController.ts
-
 import { Request, Response } from "express";
 import { ProgressApplication } from "../../application/ProgressApplication.js";
 import { loadProgressData } from "../util/progress-validation.js";

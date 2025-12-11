@@ -1,5 +1,3 @@
-// src/infrastructure/routes/ActivityRoutes.ts
-
 import { Router } from "express";
 import { ActivityController } from "../controller/ActivityController.js";
 import { ActivityApplication } from "../../application/ActivityApplication.js";

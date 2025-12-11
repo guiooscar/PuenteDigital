@@ -18,7 +18,7 @@ export class ActivityAdapter implements ActivityPort {
       id: activity.id_activity,
       moduleId: activity.module.id_module,
       title: activity.title_activity,
-      type: activity.type_activity as 'video' | 'quiz' | 'exercise',
+      type: activity.type_activity as "video" | "quiz" | "exercise",
       content: activity.content_activity ?? undefined,
       order: activity.order_activity,
       createdAt: activity.created_at,
@@ -26,7 +26,9 @@ export class ActivityAdapter implements ActivityPort {
     };
   }
 
-  private toEntity(activity: Omit<ActivityDomain, "id" | "createdAt" | "updatedAt">): ActivityEntity {
+  private toEntity(
+    activity: Omit<ActivityDomain, "id" | "createdAt" | "updatedAt">
+  ): ActivityEntity {
     const activityEntity = new ActivityEntity();
     activityEntity.module = { id_module: activity.moduleId } as any; // Solo necesitamos el ID para la relación
     activityEntity.title_activity = activity.title;
@@ -48,18 +50,25 @@ export class ActivityAdapter implements ActivityPort {
     }
   }
 
-  async updateActivity(id: number, activity: Partial<ActivityDomain>): Promise<boolean> {
+  async updateActivity(
+    id: number,
+    activity: Partial<ActivityDomain>
+  ): Promise<boolean> {
     try {
-      const existingActivity = await this.activityRepository.findOne({ where: { id_activity: id } });
+      const existingActivity = await this.activityRepository.findOne({
+        where: { id_activity: id },
+      });
       if (!existingActivity) return false;
-        // object.assign es un metodo que nos permite unir dos objetos
-        // Usamos el operador ??  para mantener valores originales si vienen undefined
+      // object.assign es un metodo que nos permite unir dos objetos
+      // Usamos el operador ??  para mantener valores originales si vienen undefined
       Object.assign(existingActivity, {
         title_activity: activity.title ?? existingActivity.title_activity,
         type_activity: activity.type ?? existingActivity.type_activity,
         content_activity: activity.content ?? existingActivity.content_activity,
         order_activity: activity.order ?? existingActivity.order_activity,
-        module: activity.moduleId ? { id_module: activity.moduleId } as any : existingActivity.module,
+        module: activity.moduleId
+          ? ({ id_module: activity.moduleId } as any)
+          : existingActivity.module,
       });
 
       await this.activityRepository.save(existingActivity);
@@ -82,7 +91,10 @@ export class ActivityAdapter implements ActivityPort {
 
   async getActivityById(id: number): Promise<ActivityDomain | null> {
     try {
-      const activity = await this.activityRepository.findOne({ where: { id_activity: id } });
+      const activity = await this.activityRepository.findOne({
+        where: { id_activity: id },
+        relations: ["module"], // <-- necesario para toDomain
+      });
       return activity ? this.toDomain(activity) : null;
     } catch (error) {
       console.error("Error obteniendo actividad por ID:", error);
@@ -92,8 +104,14 @@ export class ActivityAdapter implements ActivityPort {
 
   async getActivitiesByModuleId(moduleId: number): Promise<ActivityDomain[]> {
     try {
-      const activities = await this.activityRepository.findBy({ module: { id_module: moduleId } });
-      return activities.map(activity => this.toDomain(activity));
+      const activities = await this.activityRepository.findBy({
+        module: { id_module: moduleId },
+      });
+      const activitiesWithModule = await this.activityRepository.find({
+        where: { module: { id_module: moduleId } },
+        relations: ["module"],
+      });
+      return activitiesWithModule.map((activity) => this.toDomain(activity));
     } catch (error) {
       console.error("Error obteniendo actividades por módulo:", error);
       throw new Error("Error al obtener actividades del módulo.");
@@ -102,11 +120,13 @@ export class ActivityAdapter implements ActivityPort {
 
   async getAllActivities(): Promise<ActivityDomain[]> {
     try {
-      const activities = await this.activityRepository.find();
-      return activities.map(activity => this.toDomain(activity));
+      const activities = await this.activityRepository.find({
+        relations: ["module"], // Asegura que la relación con módulo esté cargada
+      });
+      return activities.map((activity) => this.toDomain(activity));
     } catch (error) {
       console.error("Error obteniendo todas las actividades:", error);
-      throw new Error("Error al obtener la lista de actividades.");
+      throw new Error("Error al obtener todas las actividades.");
     }
   }
 }
