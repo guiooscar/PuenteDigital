@@ -116,7 +116,7 @@ src/
    ```bash
    npm run dev
    ```
-   El servidor se levantará en: `http://localhost:4000`
+   El servidor se levantará en: `http://localhost:4001`
 
 
 ---

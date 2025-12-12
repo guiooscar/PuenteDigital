@@ -21,7 +21,7 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": false,
 
-    // React (si lo necesitas)
+    // React 
     "jsx": "react-jsx",
 
     // Behavior

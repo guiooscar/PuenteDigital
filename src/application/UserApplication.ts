@@ -1,5 +1,7 @@
+import bcrypt from "bcryptjs";
 import { User } from "../domain/User.js";
 import { UserPort } from "../domain/UserPort.js";
+import { AuthApplication } from "./AuthApplication.js";
 
 export class UserApplication {
   private port: UserPort;
@@ -8,20 +10,41 @@ export class UserApplication {
     this.port = port;
   }
 
-  //Registra un nuevo usuario. El nivel se asigna por defecto como 'basico'hasta que se complete el diagnóstico (HU03).
-   
+  // HU02: Login seguro con JWT
+  async login(email: string, password: string): Promise<string> {
+    const user = await this.port.getUserByEmail(email);
+    if (!user) {
+      throw new Error("Credenciales inválidas");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new Error("Credenciales inválidas");
+    }
+
+    // Generar token con ID y email 
+    const token = AuthApplication.generateToken({
+      id: user.id,
+      email: user.email,
+    });
+
+    return token;
+  }
+
+  // HU01: Registro con hashing de contraseña
   async registerUser(userData: Omit<User, "id" | "level" | "createdAt" | "updatedAt">): Promise<number> {
-    // Validar que el email no exista
     const existingUser = await this.port.getUserByEmail(userData.email);
     if (existingUser) {
       throw new Error("El email ya está registrado");
     }
 
-    // Asignar nivel inicial por defecto (será actualizado tras diagnóstico)
+    // Hashear la contraseña antes de guardar
+    const hashedPassword = await bcrypt.hash(userData.password, 12);
     const newUser: Omit<User, "id"> = {
-        // ...userData indica que se copian todas las propiedades de userData
+      // los tres puntos copian las demás propiedades de userData
       ...userData,
-      level: "basico", // Valor por defecto. Se actualizará con assignInitialLevel()
+      password: hashedPassword, 
+      level: "basico", // Nivel inicial por defecto
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -29,7 +52,6 @@ export class UserApplication {
     return this.port.createUser(newUser);
   }
 
-  //Simula la lógica del diagnóstico y asigna el nivel correcto, cuando hagamos una implementación real, se recibiría las respuestas del test.
   async assignInitialLevel(userId: number, testScore: number): Promise<string> {
     const user = await this.port.getUserById(userId);
     if (!user) {
@@ -49,7 +71,7 @@ export class UserApplication {
     return assignedLevel;
   }
 
-  // métodos CRUD 
+  // --- Métodos CRUD ---
   async getUserById(id: number): Promise<User | null> {
     return this.port.getUserById(id);
   }
@@ -75,6 +97,11 @@ export class UserApplication {
       }
     }
 
+    // Si se actualiza la contraseña, hashearla
+    if (user.password) {
+      user.password = await bcrypt.hash(user.password, 12);
+    }
+
     return this.port.updateUser(id, user);
   }
 
@@ -82,5 +109,3 @@ export class UserApplication {
     return this.port.deleteUser(id);
   }
 }
-
-
