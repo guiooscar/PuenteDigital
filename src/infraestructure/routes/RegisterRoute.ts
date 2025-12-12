@@ -9,7 +9,7 @@ import { loadUserData } from "../util/user-validation.js";
 const userAdapter = new UserAdapter();
 const userApplication = new UserApplication(userAdapter);
 
-// Controlador simple solo para registro
+// Controlador  solo para registro
 const registerController = {
   async registerUser(req: Request, res: Response) {
     try {

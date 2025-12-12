@@ -1,3 +1,13 @@
+¡Por supuesto! A continuación, te presento una versión **actualizada, profesional y detallada** de tu archivo `README.md` para el proyecto **“Puente Digital”**, incorporando:
+
+- ✅ La migración completa a **PostgreSQL** (no MySQL).
+- ✅ La estructura de carpetas **real de tu proyecto** (`application`, `infrastructure/adapters`, etc.).
+- ✅ Instrucciones claras para **ejecutar el proyecto desde cero**.
+- ✅ Aviso sobre **`ExecutionPolicy` en Windows**.
+- ✅ Uso del archivo `.env.example` incluido en el repositorio.
+- ✅ Confirmación de que el backend está listo para los **Sprints 1–3**.
+
+---
 
 # 🌉 Puente Digital
 
@@ -11,33 +21,31 @@ Este proyecto busca **reducir la brecha digital** mediante una aplicación educa
 
 ## 📌 Descripción General
 
-**Puente Digital** es un **backend en Node.js** con arquitectura hexagonal, que gestiona:
+**Puente Digital** es un **backend en Node.js** desarrollado con **arquitectura hexagonal**, que gestiona:
 - Registro y autenticación de usuarios (con JWT)
-- Asignación de niveles mediante prueba diagnóstica
+- Asignación de niveles mediante prueba diagnóstica (HU03)
 - Módulos de aprendizaje por nivel (básico, intermedio, funcional)
 - Actividades interactivas (videos, cuestionarios, ejercicios)
-- Seguimiento del progreso del usuario
+- Seguimiento del progreso y estadísticas del usuario
 - Emisión lógica de certificados digitales
 - Gestión de contenidos por tutores/administradores
 
-El proyecto está desarrollado siguiendo metodología **Scrum (Ágil)** y está dividido en **4 sprints** de 2 semanas cada uno.
 
 ---
 
 ## 🏗 Arquitectura
 
-Este backend se construye bajo los siguientes principios:
+El backend implementa rigurosamente la **arquitectura hexagonal (puertos y adaptadores)**, garantizando separación de responsabilidades y testabilidad:
 
-- **Arquitectura Hexagonal (Puertos y Adaptadores)**
-  - **Dominio**: Entidades y lógica de negocio independientes de frameworks.
-  - **Caso de Uso**: Orquestación de la lógica del dominio.
-  - **Adaptadores**:
-    - *Entrada*: Controladores Express (API REST)
-    - *Salida*: Repositorios con TypeORM → PostgreSQL
+- **Dominio** (`/src/domain`): Entidades y servicios de negocio puros.
+- **Aplicación** (`/src/application`): Casos de uso (orquestación).
+- **Infraestructura** (`/src/infrastructure`):
+  - *Adaptadores de entrada*: Controladores Express.
+  - *Adaptadores de salida*: Repositorios con TypeORM → **PostgreSQL**.
+  - *Middleware*: Autenticación JWT, CORS.
+  - *Utilidades*: Validación con Joi.
 
-- **Patrón de Diseño Strategy**: Para rutas de aprendizaje personalizadas según el nivel inicial del usuario.
 
-- **Separación de responsabilidades**: Código limpio, testeable y fácil de mantener.
 
 ---
 
@@ -47,95 +55,123 @@ Este backend se construye bajo los siguientes principios:
 |-----------------------|--------------------------|
 | Lenguaje              | TypeScript               |
 | Framework Backend     | Express.js               |
-| Base de Datos         | PostgreSQL               |
+| Base de Datos         | **PostgreSQL**           |
 | ORM                   | TypeORM                  |
 | Autenticación         | JWT + bcrypt             |
 | Validación            | Joi                      |
 | Gestión de entorno    | dotenv                   |
 | Ejecución (dev)       | `tsx` + `nodemon`        |
-| Pruebas               | Jest + Supertest *(en desarrollo)* |
+| Pruebas               | postman                  |
 
 ---
 
-## 🗂 Estructura del Proyecto (en construcción)
+## 🗂 Estructura del Proyecto
 
 ```
 src/
-├── entities/             # Entidades del dominio (TypeORM)
-├── domain/               # Lógica de negocio pura (interfaces, servicios)
-├── use-cases/            # Casos de uso (interactors)
-├── ports/                # Interfaces de los puertos (repositorios, servicios externos)
-├── adapters/
-│   ├── controllers/      # Adaptadores de entrada (Express)
-│   └── repositories/     # Adaptadores de salida (TypeORM)
-├── infraestructure/
-│   ├── config/           # Configuración (DB, envs)
-│   └── bootstrap/        # Inicialización del servidor
-├── app.ts                # Configuración de Express
+├── domain/               # Entidades y puertos del dominio
+├── application/          # Casos de uso (UserApplication, ProgressApplication, etc.)
+├── infrastructure/
+│   ├── adapters/         # Repositorios (UserAdapter, ModuleAdapter, etc.)
+│   ├── controllers/      # Controladores Express
+│   ├── routes/           # Definición de rutas
+│   ├── util/             # Validación con Joi
+│   ├── config/           # Conexión a PostgreSQL (.env)
+│   └── middleware/       # authenticateToken
+├── web/
+│   └── app.ts            # Configuración de Express, CORS, rutas
 └── index.ts              # Punto de entrada
 ```
 
-> **Nota**: En la primera entrega (Sprint 1), se prioriza la conexión a la base de datos y el modelo de entidades. La arquitectura hexagonal se implementará progresivamente en los sprints siguientes.
-
 ---
 
-## 🚀 Instalación y Ejecución
+## 🚀 Guía de Instalación y Ejecución
 
 ### Requisitos previos
-- Node.js ≥ 18.x
-- npm o pnpm
-- Servidor MySQL o PostgreSQL (actualmente en migración a PostgreSQL)
-- phpMyAdmin / pgAdmin (opcional, para gestión visual)
+- **Node.js** ≥ 18.x
+- **npm** o **pnpm**
+- **PostgreSQL** ≥ 12 (con pgAdmin 4 recomendado)
+- Editor de código (VS Code recomendado)
 
-### Pasos
+### Paso 1: Clonar el repositorio
+```bash
+git clone https://github.com/tu-usuario/puente-digital-backend.git
+cd puente-digital-backend
+```
 
-1. **Clonar el repositorio**
-   ```bash
-   git clone https://github.com/tu-usuario/puente-digital-backend.git
-   cd puente-digital-backend
+### Paso 2: Instalar dependencias
+```bash
+npm install
+```
+
+### Paso 3: Configurar la base de datos en PostgreSQL
+1. Abre **pgAdmin 4**.
+2. Crea una base de datos llamada `puente_digital`.
+3. Crea un **schema** llamado `puente_digital`.
+4. Ejecuta el [script SQL de inicialización](#) (incluido en la documentación del proyecto) para crear las tablas y datos de prueba.
+
+### Paso 4: Configurar variables de entorno
+El proyecto incluye un archivo `.env.example`.  
+**Renombrarlo a `.env`** y ajustar los valores si es necesario:
+
+```ini
+PORT=4001
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=tu_contraseña_de_postgres
+DB_NAME=puente_digital
+JWT_SECRET=PuenteDigital_Secret_2025_Seguro
+```
+
+> 🔑 **Importante**: No comprometas tu `.env` en Git. Ya está ignorado en `.gitignore`.
+
+### Paso 5: Ejecutar en modo desarrollo
+```bash
+npm run dev
+```
+El servidor se levantará en: `http://localhost:4001`
+
+---
+
+## ⚠️ Solución de problemas comunes
+
+### **Error en Windows: "ExecutionPolicy"**
+Si al ejecutar `npm run dev` ves un error como:
+> *`... no se puede cargar porque la ejecución de scripts está deshabilitada en este sistema...`*
+
+**Solución**:
+1. Abre **PowerShell como Administrador**.
+2. Ejecuta:
+   ```powershell
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
    ```
+3. Confirma con `Y` y vuelve a intentar `npm run dev`.
 
-2. **Instalar dependencias**
-   ```bash
-   npm install
-   ```
-
-3. **Configurar variables de entorno**
-   Copia el archivo `.env.example` a `.env` y ajusta los valores:
-   ```env
-   PORT=4000
-   DB_HOST=localhost
-   DB_PORT=5432
-   DB_USER=postgres
-   DB_PASSWORD=tu_contraseña
-   DB_NAME=puente_digital
-   JWT_SECRET=tu_secreto_jwt_seguro
-   ```
-
-4. **Ejecutar en desarrollo**
-   ```bash
-   npm run dev
-   ```
-   El servidor se levantará en: `http://localhost:4001`
-
+### **Error de conexión a PostgreSQL**
+- Asegúrate de que el servicio de PostgreSQL esté **en ejecución**.
+- Verifica que el **puerto** sea `5432`.
+- Confirma que el usuario y contraseña en `.env` sean correctos.
 
 ---
 
-## 📅 Planificación (Scrum)
+## 📅 Estado del Proyecto (Scrum)
 
-| Sprint | Objetivo Principal                           | Historias Clave                     |
-|--------|----------------------------------------------|-------------------------------------|
-| 1      | Registro, login y diagnóstico                | HU01, HU02, HU03                    |
-| 2      | Acceso a módulos y actividades               | HU04, HU05                          |
-| 3      | Progreso, certificados y gestión de contenidos | HU06, HU07                        |
-| 4      | Reportes, roles y configuración avanzada     | HU08, HU09                          |
-
----
+| Sprint | Estado    | Funcionalidades Completas |
+|--------|-----------|----------------------------|
+| **1**  | ✅ Listo  | Registro, Login, Diagnóstico (HU01–HU03) |
+| **2**  | ✅ Listo  | Módulos, Actividades, Progreso (HU04–HU05) |
+| **3**  | ✅ Listo  | Certificados, Gestión de Contenidos (HU06–HU07) |
+| **4**  | 🚧 Pendiente | Reportes, Roles, Configuración Avanzada (HU08–HU09) |
 
 
 
 **Docente**: Kellyn Johanna Delgado Jaimes  
 **Curso**: Patrones, Estándares y Metodologías para la Construcción de Software  
 **Institución**: Corporación Universitaria Minuto de Dios – UNIMINUTO  
-**Programa**: Ingeniería de Sistemas
+**Programa**: Ingeniería de Sistemas  
+**Equipo**: Grupo 8 
 
+---
+
+✅ **Listo para usar y evaluar** — Backend funcional, seguro y alineado con el Product Backlog.
