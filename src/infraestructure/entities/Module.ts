@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { Activity } from "./Activity.js";
 import { Certificate } from "./Certificate.js";
 
-@Entity('modules')
+@Entity({ name: 'modules', schema: 'puente_digital' })
 export class Module {
   @PrimaryGeneratedColumn()
   id_module!: number;
@@ -13,16 +13,17 @@ export class Module {
   @Column({ type: "text", nullable: true })
   description_module!: string | null;
 
-  @Column({ type: "enum", enum: ['basico', 'intermedio', 'funcional'] })
+  @Column({ type: "enum", enum: ["basico", "intermedio", "funcional"] })
   level_module!: string;
 
-  @Column({ type: "int", default: 0 })
+  @Column({ type: "integer", default: 0 }) 
+  
   order_module!: number;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at!: Date;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }) 
   updated_at!: Date;
 
   @OneToMany(() => Activity, activity => activity.module)

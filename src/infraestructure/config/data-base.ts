@@ -12,12 +12,13 @@ import envs from './environment-vars.js';
 dotenv.config();
 // creamos un nuevo DataSource de TypeORM que representa la conexión a la base de datos
 export const AppDataSource = new DataSource({
-  type: 'mysql',
+  type: 'postgres',
   host: envs.DB_HOST,
   port: Number(envs.DB_PORT),
   username: envs.DB_USER,
   password: envs.DB_PASSWORD,
   database: envs.DB_NAME,
+  schema: 'puente_digital',
   synchronize: true, 
   logging: true,
   entities: [User, Module, Activity, Progress, Certificate],

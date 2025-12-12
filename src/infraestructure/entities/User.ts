@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { Progress } from "./Progress.js";
 import { Certificate } from "./Certificate.js";
 
-@Entity('users')
+@Entity({ name: 'users', schema: 'puente_digital' })
 export class User {
   @PrimaryGeneratedColumn()
   id_user!: number;
@@ -16,13 +16,13 @@ export class User {
   @Column({ type: "varchar", length: 255 })
   password_user!: string;
 
-  @Column({ type: "enum", enum: ['basico', 'intermedio', 'funcional'], default: 'basico' })
+  @Column({ type: "enum", enum: ["basico", "intermedio", "funcional"], default: "basico" })
   level_user!: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at!: Date;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }) 
   updated_at!: Date;
 
   @OneToMany(() => Progress, progress => progress.user)

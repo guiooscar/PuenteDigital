@@ -6,7 +6,7 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  level: 'basico' | 'intermedio' | 'funcional'; // Nivel del usuario según HU03
+  level: 'basico' | 'intermedio' | 'funcional'; 
   createdAt?: Date;
   updatedAt?: Date;
 }

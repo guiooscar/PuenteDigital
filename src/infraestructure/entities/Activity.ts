@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMan
 import { Module } from "./Module.js";
 import { Progress } from "./Progress.js";
 
-@Entity('activities')
+@Entity({ name: 'activities', schema: 'puente_digital' })
 export class Activity {
   @PrimaryGeneratedColumn()
   id_activity!: number;
@@ -14,19 +14,19 @@ export class Activity {
   @Column({ type: "varchar", length: 255 })
   title_activity!: string;
 
-  @Column({ type: "enum", enum: ['video', 'quiz', 'exercise'] })
+  @Column({ type: "enum", enum: ["video", "quiz", "exercise"] })
   type_activity!: string;
 
   @Column({ type: "text", nullable: true })
   content_activity!: string | null;
 
-  @Column({ type: "int", default: 0 })
+  @Column({ type: "integer", default: 0 }) 
   order_activity!: number;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at!: Date;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }) 
   updated_at!: Date;
 
   @OneToMany(() => Progress, progress => progress.activity)

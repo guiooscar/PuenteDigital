@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "t
 import { User } from "./User.js";
 import { Activity } from "./Activity.js";
 
-@Entity('progress')
+@Entity({ name: 'progress', schema: 'puente_digital' })
 export class Progress {
   @PrimaryGeneratedColumn()
   id_progress!: number;
@@ -18,10 +18,10 @@ export class Progress {
   @Column({ type: "boolean", default: false })
   completed!: boolean;
 
-  @Column({ type: "decimal", precision: 3, scale: 2, default: 0.00 })
-  score!: number;
+  @Column({ type: "numeric", precision: 5, scale: 2, default: 0.00 })
+score!: number;
 
-  @Column({ type: "int", default: 0 })
+  @Column({ type: "integer", default: 0 }) 
   attempts!: number;
 
   @Column({ type: "timestamp", nullable: true })
@@ -30,6 +30,6 @@ export class Progress {
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at!: Date;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }) 
   updated_at!: Date;
 }
