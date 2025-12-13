@@ -1,5 +1,3 @@
-// src/infrastructure/routes/RegisterRoute.ts
-
 import { Router, Request, Response } from "express";
 import { UserApplication } from "../../application/UserApplication.js";
 import { UserAdapter } from "../adapter/UserAdapter.js";
